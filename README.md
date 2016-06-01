@@ -2,6 +2,10 @@
 
 We have built our own super simple DI. 
 
+## Install
+
+`npm install @mindhive/di`
+
 ## Motivations and benefits
 
 - Prefer pure functions as they are: 
@@ -46,7 +50,7 @@ code under test that uses `inject()`.
 ```javascript
 const service = {} 
 it('should call service.foo()', 
-  mockAppContext({ service }, () => {
+  test.mockAppContext({ service }, () => {
 	service.foo = sinon.spy()
 	injectedFuncUnderTest()
 	service.foo.should.have.been.calledOnce      	
