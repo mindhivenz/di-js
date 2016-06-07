@@ -29,8 +29,16 @@ describe('mockAppContext', () => {
     appContext.should.be.empty
   })
 
-  it('should add new entries into appContext', () => {
+  it('should add new entries into appContext and restore them', () => {
     mockAppContext({ a: 1, b: 2 }, () => {
+      appContext.should.have.property('a', 1)
+      appContext.should.have.property('b', 2)
+    })()
+    appContext.should.be.empty
+  })
+
+  it('should call context if it is a function and apply the result', () => {
+    mockAppContext(() => ({ a: 1, b: 2 }), () => {
       appContext.should.have.property('a', 1)
       appContext.should.have.property('b', 2)
     })()

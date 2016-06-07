@@ -16,7 +16,6 @@ Note: this can't be called wrapping a 'describe' function. It only works on 'it'
  */
 export const mockAppContext = (...contextAndFunc) =>
   (...args) => {
-    const [context, func] = (contextAndFunc.length <= 1) ? [{}, ...contextAndFunc] : contextAndFunc
     if (recursiveDepth === 0) {
       const existingKeys = Object.keys(appContext)
       if (existingKeys.length) {
@@ -26,6 +25,10 @@ export const mockAppContext = (...contextAndFunc) =>
         )
       }
     }
+    const [contextObjOrFunc, func] = (contextAndFunc.length <= 1) ?
+      [{}, ...contextAndFunc] :
+      contextAndFunc
+    const context = (typeof contextObjOrFunc === 'function') ? contextObjOrFunc() : contextObjOrFunc
     const originalAppContext = { ...appContext }
     Object.assign(appContext, context)
     recursiveDepth++
