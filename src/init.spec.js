@@ -1,7 +1,7 @@
 import some from '@mindhive/some'
 
 import { sinon, should } from './mocha'
-import { mockAppContext } from './test'
+import { mockAppContext } from './mockAppContext'
 
 import { appContext } from './inject'
 import { initModules } from './init'
