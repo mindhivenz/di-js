@@ -34,7 +34,8 @@ export default injectedIntoFunc => {
   if (typeof(injectedIntoFunc) !== 'function') {
     throw new TypeError(`inject called with ${injectedIntoFunc} which is not a function`)
   }
-  return (...args) =>
-    injectedIntoFunc(appContext, ...args)
+  return function injectWrapper(...args) {
+    return injectedIntoFunc.call(this, appContext, ...args)
+  }
 }
 

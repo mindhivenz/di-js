@@ -31,6 +31,16 @@ describe('inject', () => {
     })
   )
 
+  it('should keep this',
+    mockAppContext(context, () => {
+      const injectedIntoFunc = sinon.spy()
+      const injected = inject(injectedIntoFunc)
+      const thisContext = some.object()
+      injected.call(thisContext)
+      injectedIntoFunc.should.have.been.calledOn(thisContext)
+    })
+  )
+
   it('should fail fast when passed undefined', () => {
     should.throw(() => {
       inject(undefined)
