@@ -33,7 +33,7 @@ export const mockAppContext = (...contextAndFunc) =>
     try {
       return func(...args)
     } finally {
-      // REVISIT: If the return from func us a promise should we wait until the
+      // REVISIT: If the return from func is a promise should we wait until the
       // promise is resolved before setting appContext back?
       // Mocha it() can handle a promise return.
       recursiveDepth--

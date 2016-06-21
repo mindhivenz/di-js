@@ -20,7 +20,7 @@ We have built our own super simple DI.
 
 1. Main file for the app should import all of it's modules using `initModules()` 
 
-2. Modules should be a directory's `index.js` with a default export function
+2. Modules should export a default function
 
 	- For example: `export default () => { return { serviceName: new Service(), ... } }`	
 	- Return an object where the keys map service names to the service objects/functions to be 
