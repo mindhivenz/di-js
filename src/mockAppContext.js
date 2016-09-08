@@ -24,11 +24,13 @@ export const mockAppContext = (...contextAndFunc) =>
       }
     }
     const [contextObjOrFunc, func] = (contextAndFunc.length <= 1) ?
-      [{}, ...contextAndFunc] :
+      [{}, contextAndFunc] :
       contextAndFunc
-    const context = (typeof contextObjOrFunc === 'function') ? contextObjOrFunc() : contextObjOrFunc
     const originalAppContext = { ...appContext }
-    Object.assign(appContext, context)
+    const context = (typeof contextObjOrFunc === 'function') ? contextObjOrFunc() : contextObjOrFunc
+    if (context) {
+      Object.assign(appContext, context)
+    }
     recursiveDepth++
     try {
       return func(...args)
