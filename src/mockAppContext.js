@@ -27,12 +27,12 @@ export const mockAppContext = (...contextAndFunc) =>
       [{}, contextAndFunc] :
       contextAndFunc
     const originalAppContext = { ...appContext }
-    const context = (typeof contextObjOrFunc === 'function') ? contextObjOrFunc() : contextObjOrFunc
-    if (context) {
-      Object.assign(appContext, context)
-    }
     recursiveDepth++
     try {
+      const context = (typeof contextObjOrFunc === 'function') ? contextObjOrFunc() : contextObjOrFunc
+      if (context) {
+        Object.assign(appContext, context)
+      }
       return func(...args)
     } finally {
       // REVISIT: If the return from func is a promise should we wait until the
