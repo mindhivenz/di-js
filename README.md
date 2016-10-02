@@ -8,10 +8,7 @@ We have built our own super simple DI.
 
 ## Motivations and benefits
 
-- Prefer pure functions as they are: 
-	- simpler to understand 
-	- easily tested
-	- make dependencies explicit
+- Prefer pure functions
 - Avoid ES6 imports as they are difficult to test
 - Especially avoid Meteor package imports as most test runners don't understand Meteor's packaging
 	(they can be accessed through Meteor globals but that's not a great idea either)
@@ -22,39 +19,34 @@ We have built our own super simple DI.
 
 2. Modules should export a default function
 
-	- For example: `export default () => { return { serviceName: new Service(), ... } }`	
+	- For example: `export default () => { ...; return { serviceName: new Service(), ... } }`	
 	- Return an object where the keys map service names to the service objects/functions to be 
 		put into the app context
-	- The module function is also passed the current appContext to access other services (destructing works a treat),
-    	for example: `export default ({ Meteor, Mongo }) => { ... }`
-    - Modules further down the list passed to `initModules()` can use services added to the appContext by 
-    	earlier modules
+	- Modules further down thru the array passed to `initModules()` can use services added to the 
+		appContext by earlier modules. The module function is passed the current appContext 
+		(destructing works a treat), for example: 
+		`export default ({ Meteor, Mongo }) => { ... }`
     - Modules don't have to return anything, you can use them to perform other initialization
     - Modules are called inside `Meteor.startup` so there is no need to manage that yourself
 
-3. To use services in the appContext wrap a function with `inject(...)`
-
-	- Given a function that needs services form the appContext, for example: 
-		`const fooFunc = ({ Tasks, Accounts }, bar) => {...}`
-	- When we wrap this function: `const foo = inject(fooFunc)`
-	- Then we can call the returned function as `foo(barValue)` and services will be injected 
-	   automagically
-	 
-4. Testing is then easy and explicit
+3. To access services in the appContext call `app()` to get the appContext
 
 ## Testing
 
 In the example below `service` will be the only object in the appContext and available to any
-code under test that uses `inject()`. 
+code that calls `app()`. 
 
 ```javascript
-const service = {} 
+const modules = () => ({ 
+  service: { foo: sinon.spy() }  
+}) 
 it('should call service.foo()', 
-  test.mockAppContext({ service }, () => {
-	service.foo = sinon.spy()
-	injectedFuncUnderTest()
-	service.foo.should.have.been.calledOnce      	
+  test.mockAppContext(modules, () => { 
+    funcUnderTest()
+    service.foo.should.have.been.calledOnce      	
   })
 )
-```		 	 
-	 
+````
+
+`modules` is a function so that the spys and dummy values used in it 
+are recreated every test, avoiding any contamination to the next test.

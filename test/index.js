@@ -1,9 +1,9 @@
 'use strict'
 
-var inject = require('../dist/inject')
+var appContext = require('../dist/appContext')
 var test = require('../dist/mockAppContext')
 
 module.exports = {
-  appContext: inject.appContext,
+  appContext: appContext.appContext,
   mockAppContext: test.mockAppContext,
 }

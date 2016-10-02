@@ -1,4 +1,4 @@
-import { appContext } from './inject'
+import { appContext } from './appContext'
 
 
 let recursiveDepth = 0

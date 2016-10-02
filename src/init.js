@@ -1,4 +1,4 @@
-import { appContext } from './inject'
+import { appContext } from './appContext'
 
 /*
  A module should be defined as default export as a function the takes (appContext).

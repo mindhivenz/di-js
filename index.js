@@ -1,9 +1,9 @@
 'use strict'
 
 var init = require('./dist/init')
-var inject = require('./dist/inject')
+var appContext = require('./dist/appContext')
 
 module.exports = {
   initModules: init.initModules,
-  inject: inject.default,
+  app: appContext.app,
 }
