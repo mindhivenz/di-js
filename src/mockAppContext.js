@@ -24,7 +24,7 @@ export const mockAppContext = (...contextAndFunc) =>
       }
     }
     const [contextObjOrFunc, func] = (contextAndFunc.length <= 1) ?
-      [{}, contextAndFunc] :
+      [{}, ...contextAndFunc] :
       contextAndFunc
     const originalAppContext = { ...appContext }
     recursiveDepth++
@@ -33,7 +33,7 @@ export const mockAppContext = (...contextAndFunc) =>
       if (context) {
         Object.assign(appContext, context)
       }
-      return func(...args)
+      return func(appContext, ...args)
     } finally {
       // REVISIT: If the return from func is a promise should we wait until the
       // promise is resolved before setting appContext back?

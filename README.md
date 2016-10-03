@@ -37,11 +37,12 @@ In the example below `service` will be the only object in the appContext and ava
 code that calls `app()`. 
 
 ```javascript
+import { mockAppContext } from '@mindhive/di'
 const modules = () => ({ 
   service: { foo: sinon.spy() }  
 }) 
 it('should call service.foo()', 
-  test.mockAppContext(modules, () => { 
+  mockAppContext(modules, () => { 
     funcUnderTest()
     service.foo.should.have.been.calledOnce      	
   })

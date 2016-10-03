@@ -3,16 +3,17 @@ import some from '@mindhive/some'
 import { sinon, should } from './mocha'
 
 import { appContext } from './appContext'
+import { initModules } from './init'
 import { mockAppContext } from './mockAppContext'
 
 
 describe('mockAppContext', () => {
 
-  it('should call the original func and pass arguments', () => {
+  it('should call func with appContext and passed arguments', () => {
     const func = sinon.spy()
     const args = some.array()
-    mockAppContext({}, func)(...args)
-    func.should.have.been.calledWith(...args)
+    mockAppContext(func)(...args)
+    func.should.have.been.calledWith(appContext, ...args)
   })
 
   it('should return result of original func', () => {
@@ -29,7 +30,7 @@ describe('mockAppContext', () => {
     appContext.should.be.empty
   })
 
-  it('should add new entries into appContext and restore them', () => {
+  it('should apply plain object into appContext and restore afterwards', () => {
     mockAppContext({ a: 1, b: 2 }, () => {
       appContext.should.have.property('a', 1)
       appContext.should.have.property('b', 2)
@@ -38,10 +39,31 @@ describe('mockAppContext', () => {
   })
 
   it('should call context if it is a function and apply the result', () => {
-    mockAppContext(() => ({ a: 1, b: 2 }), () => {
+    const contextFunc = () => ({ a: 1, b: 2 })
+    mockAppContext(contextFunc, () => {
       appContext.should.have.property('a', 1)
       appContext.should.have.property('b', 2)
     })()
+    appContext.should.be.empty
+  })
+
+  it('should work with initModules inside context function', () => {
+    const module = () => ({ a: 1, b: 2 })
+    const contextFunc = () => { initModules([module]) }
+    mockAppContext(contextFunc, () => {
+      appContext.should.have.property('a', 1)
+      appContext.should.have.property('b', 2)
+    })()
+    appContext.should.be.empty
+  })
+
+  it('should handle context function throwing after modifying context', () => {
+    const goodModule = () => ({ a: 1, b: 2 })
+    const badModule = () => { throw new Error() }
+    const contextFunc = () => { initModules([goodModule, badModule]) }
+    should.throw(() => {
+      mockAppContext(contextFunc, () => {})()
+    })
     appContext.should.be.empty
   })
 
@@ -57,7 +79,7 @@ describe('mockAppContext', () => {
       mockAppContext(
         sinon.spy()
       )()
-    }, Error)
+    })
     delete appContext.someContext
   })
 
