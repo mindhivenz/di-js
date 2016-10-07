@@ -1,8 +1,11 @@
 import sinon from 'sinon'
 import chai from 'chai'
-const should = chai.should()
 import sinonChai from 'sinon-chai'
-chai.use(sinonChai)
+import chaiAsPromised from 'chai-as-promised'
 
+const should = chai.should()
+
+chai.use(sinonChai)
+chai.use(chaiAsPromised)
 
 export { sinon, should }

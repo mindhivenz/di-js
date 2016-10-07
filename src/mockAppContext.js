@@ -28,20 +28,28 @@ export const mockAppContext = (...contextAndFunc) =>
       contextAndFunc
     const originalAppContext = { ...appContext }
     recursiveDepth++
-    try {
-      const context = (typeof contextObjOrFunc === 'function') ? contextObjOrFunc() : contextObjOrFunc
-      if (context) {
-        Object.assign(appContext, context)
-      }
-      return func(appContext, ...args)
-    } finally {
-      // REVISIT: If the return from func is a promise should we wait until the
-      // promise is resolved before setting appContext back?
-      // Mocha it() can handle a promise return.
+    const cleanup = () => {
       recursiveDepth--
       Object.keys(appContext).forEach(key => {
         delete appContext[key]
       })
       Object.assign(appContext, originalAppContext)
     }
+    return new Promise((resolve) => {
+      const context = (typeof contextObjOrFunc === 'function') ? contextObjOrFunc() : contextObjOrFunc
+      if (context) {
+        Object.assign(appContext, context)
+      }
+      resolve(func(appContext, ...args))
+    })
+      .then(
+        (result) => {
+          cleanup()
+          return result
+        },
+        (error) => {
+          cleanup()
+          throw error
+        }
+      )
   }
