@@ -8,7 +8,7 @@ import { mockAppContext } from './mockAppContext'
 
 /* eslint-disable arrow-body-style */
 
-// REVISIT: would love to get this working with async/await instead by IDEA & Wallaby won't compile it
+// REVISIT: would love to get this working with async/await
 
 describe('mockAppContext', () => {
 
@@ -21,14 +21,21 @@ describe('mockAppContext', () => {
       })
   })
 
-  it('should return result of original func', () => {
+  it('should return result of func', () => {
     const expected = some.object()
     const func = () => expected
     const actual = mockAppContext({}, func)()
     return actual.should.eventually.equal(expected)
   })
 
-  it('should handle func returning a promise', () => {
+  it('should bubble exception of func', () => {
+    const expected = new Error()
+    const func = () => { throw expected }
+    const actual = mockAppContext({}, func)()
+    return actual.should.eventually.be.rejectedWith(expected)
+  })
+
+  it('should handle func returning a promise that fulfills', () => {
     const expected = some.object()
     const func = () =>
       new Promise((resolve) => {
@@ -36,6 +43,16 @@ describe('mockAppContext', () => {
       })
     const actual = mockAppContext({}, func)()
     return actual.should.eventually.equal(expected)
+  })
+
+  it('should handle func returning a promise that rejects', () => {
+    const expected = new Error()
+    const func = () =>
+      new Promise((resolve, reject) => {
+        setTimeout(() => reject(expected), 100)
+      })
+    const actual = mockAppContext({}, func)()
+    return actual.should.eventually.be.rejectedWith(expected)
   })
 
   it('should restore any changes made to appContext', () => {
