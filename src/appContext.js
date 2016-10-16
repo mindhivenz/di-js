@@ -4,6 +4,13 @@
 
  Only exported to enable testing. You shouldn't be accessing this normally.
  */
-export const appContext = {}
 
-export const app = () => appContext
+if (! global.appContext) {
+  global.appContext = {}
+}
+
+export const appContext = global.appContext
+
+export const app = () =>
+  appContext
+
