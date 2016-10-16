@@ -81,4 +81,18 @@ describe('initModules', () => {
     })
   )
 
+  it('should report which module index is not a function',
+    mockAppContext(() => {
+      should.throw(() => {
+        initModules([
+          () => {
+          },
+          undefined,
+          () => {
+          },
+        ])
+      }, /module index 1 \(3 total\) is undefined/)
+    })
+  )
+
 })

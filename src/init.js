@@ -12,6 +12,14 @@ import { appContext } from './appContext'
  the context is passed into the next module.
  */
 
+const sanityCheckModules = (modules) => {
+  modules.forEach((m, i) => {
+    if (typeof m !== 'function') {
+      throw new Error(`initModules() module index ${i} (${modules.length} total) is ${typeof m}, not a function`)
+    }
+  })
+}
+
 const sanityCheckDuplicateContextName = (newNames) => {
   const existingContextNames = new Set(Object.keys(appContext))
   newNames.forEach(newName => {
@@ -24,6 +32,7 @@ const sanityCheckDuplicateContextName = (newNames) => {
 }
 
 export const initModules = (modules) => {
+  sanityCheckModules(modules)
   modules.forEach(module => {
     const context = module(appContext)
     if (context) {
