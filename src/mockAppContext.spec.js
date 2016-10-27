@@ -102,7 +102,7 @@ describe('mockAppContext', () => {
     const badModule = () => { throw new Error() }
     const contextFunc = () => { initModules([goodModule, badModule]) }
     return mockAppContext(contextFunc, () => {})()
-      .catch(e => {
+      .catch((e) => {
         appContext.should.be.empty
         throw e
       })

@@ -27,10 +27,10 @@ export const mockAppContext = (...contextAndFunc) =>
       [{}, ...contextAndFunc] :
       contextAndFunc
     const originalAppContext = { ...appContext }
-    recursiveDepth++
+    recursiveDepth += 1
     const cleanup = () => {
-      recursiveDepth--
-      Object.keys(appContext).forEach(key => {
+      recursiveDepth -= 1
+      Object.keys(appContext).forEach((key) => {
         delete appContext[key]
       })
       Object.assign(appContext, originalAppContext)

@@ -22,7 +22,7 @@ const sanityCheckModules = (modules) => {
 
 const sanityCheckDuplicateContextName = (newNames) => {
   const existingContextNames = new Set(Object.keys(appContext))
-  newNames.forEach(newName => {
+  newNames.forEach((newName) => {
     if (existingContextNames.has(newName)) {
       throw new ReferenceError(
         `initModules() with more than one context member called "${newName}"`
@@ -33,7 +33,7 @@ const sanityCheckDuplicateContextName = (newNames) => {
 
 export const initModules = (modules) => {
   sanityCheckModules(modules)
-  modules.forEach(module => {
+  modules.forEach((module) => {
     const context = module(appContext)
     if (context) {
       sanityCheckDuplicateContextName(Object.keys(context))
