@@ -1,156 +1,133 @@
 import some from '@mindhive/some'
 
-import { sinon, should } from './mocha'
+import { sinon } from './mocha'
 
 import { appContext } from './appContext'
 import { initModules } from './init'
 import { mockAppContext } from './mockAppContext'
 
-/* eslint-disable arrow-body-style */
-
-// REVISIT: would love to get this working with async/await
 
 describe('mockAppContext', () => {
 
-  it('should call func with appContext and passed arguments', () => {
+  it('should call func with appContext and passed arguments', async () => {
     const func = sinon.spy()
     const args = some.array()
-    return mockAppContext(func)(...args)
-      .then(() => {
-        func.should.have.been.calledWith(appContext, ...args)
-      })
+    await mockAppContext(func)(...args)
+    func.should.have.been.calledWith(appContext, ...args)
   })
 
-  it('should return result of func', () => {
+  it('should return result of func', async () => {
     const expected = some.object()
     const func = () => expected
-    const actual = mockAppContext({}, func)()
-    return actual.should.eventually.equal(expected)
+    await mockAppContext({}, func)()
+      .should.eventually.equal(expected)
   })
 
-  it('should bubble exception of func', () => {
+  it('should bubble exception of func', async () => {
     const expected = new Error()
     const func = () => { throw expected }
-    const actual = mockAppContext({}, func)()
-    return actual.should.eventually.be.rejectedWith(expected)
+    await mockAppContext({}, func)()
+      .should.eventually.be.rejectedWith(expected)
   })
 
-  it('should handle func returning a promise that fulfills', () => {
+  it('should handle func returning a promise that fulfills', async () => {
     const expected = some.object()
     const func = () =>
       new Promise((resolve) => {
         setTimeout(() => resolve(expected), 100)
       })
-    const actual = mockAppContext({}, func)()
-    return actual.should.eventually.equal(expected)
+    await mockAppContext({}, func)()
+      .should.eventually.equal(expected)
   })
 
-  it('should handle func returning a promise that rejects', () => {
+  it('should handle func returning a promise that rejects', async () => {
     const expected = new Error()
     const func = () =>
       new Promise((resolve, reject) => {
         setTimeout(() => reject(expected), 100)
       })
-    const actual = mockAppContext({}, func)()
-    return actual.should.eventually.be.rejectedWith(expected)
+    await mockAppContext({}, func)()
+      .should.eventually.be.rejectedWith(expected)
   })
 
-  it('should restore any changes made to appContext', () => {
-    return mockAppContext(() => {
+  it('should restore any changes made to appContext', async () => {
+    await mockAppContext(() => {
       appContext.someObject = some.object()
     })()
-      .then(() => {
-        appContext.should.be.empty
-      })
+    appContext.should.be.empty
   })
 
-  it('should apply plain object into appContext and restore afterwards', () => {
-    return mockAppContext({ a: 1, b: 2 }, () => {
+  it('should apply plain object into appContext and restore afterwards', async () => {
+    await mockAppContext({ a: 1, b: 2 }, () => {
       appContext.should.have.property('a', 1)
       appContext.should.have.property('b', 2)
     })()
-      .then(() => {
-        appContext.should.be.empty
-      })
+    appContext.should.be.empty
   })
 
-  it('should call context if it is a function and apply the result', () => {
+  it('should call context if it is a function and apply the result', async () => {
     const contextFunc = () => ({ a: 1, b: 2 })
-    return mockAppContext(contextFunc, () => {
+    await mockAppContext(contextFunc, () => {
       appContext.should.have.property('a', 1)
       appContext.should.have.property('b', 2)
     })()
-      .then(() => {
-        appContext.should.be.empty
-      })
+    appContext.should.be.empty
   })
 
-  it('should work with initModules inside context function', () => {
+  it('should work with initModules inside context function', async () => {
     const module = () => ({ a: 1, b: 2 })
     const contextFunc = () => { initModules([module]) }
-    return mockAppContext(contextFunc, () => {
+    await mockAppContext(contextFunc, () => {
       appContext.should.have.property('a', 1)
       appContext.should.have.property('b', 2)
     })()
-      .then(() => {
-        appContext.should.be.empty
-      })
+    appContext.should.be.empty
   })
 
-  it('should handle context function throwing after modifying context', () => {
+  it('should handle context function throwing after modifying context', async () => {
     const goodModule = () => ({ a: 1, b: 2 })
     const badModule = () => { throw new Error() }
     const contextFunc = () => { initModules([goodModule, badModule]) }
-    return mockAppContext(contextFunc, () => {})()
-      .catch((e) => {
-        appContext.should.be.empty
-        throw e
-      })
-      .should.be.rejected
+    await mockAppContext(contextFunc, () => {})()
+      .should.eventually.reject
+    appContext.should.be.empty
   })
 
-  it('should allow context to be optional', () => {
+  it('should allow context to be optional', async () => {
     const func = sinon.spy()
-    return mockAppContext(func)()
-      .then(() => {
-        func.should.have.been.called
-      })
+    await mockAppContext(func)()
+    func.should.have.been.called
   })
 
-  it('should throw if appContext is not initially empty', () => {
-    appContext.someContext = some.object()
-    should.throw(() => {
-      mockAppContext(
+  it('should throw if appContext is not initially empty', async () => {
+    try {
+      appContext.someContext = some.object()
+      await mockAppContext(
         sinon.spy()
-      )()
-    })
-    delete appContext.someContext
+      )().should.eventually.reject
+    } finally {
+      delete appContext.someContext
+    }
   })
 
-  it('should allow nested calls', () => {
+  it('should allow nested calls', async () => {
     const func = sinon.spy(() => {
       appContext.should.have.keys('firstContext', 'secondContext')
     })
-    return mockAppContext({ firstContext: some.object() }, () =>
+    await mockAppContext({ firstContext: some.object() }, () =>
       mockAppContext({ secondContext: some.object() }, func)()
     )()
-      .then(() => {
-        func.should.have.been.calledOnce
-      })
+    func.should.have.been.calledOnce
   })
 
-  it('should restore intermediate context in nested calls', () => {
+  it('should restore intermediate context in nested calls', async () => {
     const func = sinon.spy()
-    return mockAppContext({ firstContext: some.object() }, () =>
-      mockAppContext({ secondContext: some.object() }, func)()
-        .then(() => {
-          appContext.should.have.keys('firstContext')
-          appContext.should.not.have.keys('secondContext')
-        })
-    )()
-      .then(() => {
-        func.should.have.been.calledOnce
-      })
+    await mockAppContext({ firstContext: some.object() }, async () => {
+      await mockAppContext({ secondContext: some.object() }, func)()
+      appContext.should.have.keys('firstContext')
+      appContext.should.not.have.keys('secondContext')
+    })()
+    func.should.have.been.calledOnce
   })
 
 })
