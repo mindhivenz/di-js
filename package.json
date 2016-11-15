@@ -45,9 +45,6 @@
     "sinon": "^1.17.6",
     "sinon-chai": "^2.8.0"
   },
-  "peerDependencies": {
-    "babel-polyfill": "^6.16.0"
-  },
   "homepage": "https://github.com/mindhivenz/di-js",
   "bugs": {
     "url": "https://github.com/mindhivenz/di-js/issues"
