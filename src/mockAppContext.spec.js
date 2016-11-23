@@ -9,11 +9,10 @@ import { mockAppContext } from './mockAppContext'
 
 describe('mockAppContext', () => {
 
-  it('should call func with appContext and passed arguments', async () => {
+  it('should call func with appContext', async () => {
     const func = sinon.spy()
-    const args = some.array()
-    await mockAppContext(func)(...args)
-    func.should.have.been.calledWith(appContext, ...args)
+    await mockAppContext(func)()
+    func.should.have.been.calledWith(appContext)
   })
 
   it('should return result of func', async () => {
@@ -89,7 +88,7 @@ describe('mockAppContext', () => {
     const badModule = () => { throw new Error() }
     const contextFunc = () => { initModules([goodModule, badModule]) }
     await mockAppContext(contextFunc, () => {})()
-      .should.eventually.reject
+      .should.be.rejected
     appContext.should.be.empty
   })
 
