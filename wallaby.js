@@ -16,5 +16,10 @@ module.exports = function (wallaby) {
       type: 'node',
     },
     testFramework: 'mocha',
+    bootstrap: function () {
+      process.on('unhandledRejection', (reason, promise) => {
+        console.log('Unhandled promise rejection', reason)
+      })
+    }
   }
 }
