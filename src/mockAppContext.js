@@ -3,8 +3,6 @@ import { appContext } from './appContext'
 
 let recursiveDepth = 0
 
-// REVISIT: why do tests timeout when I make mockAppContext return an async function?
-
 /*
 Add to appContext for func and clean it up at the end
 
