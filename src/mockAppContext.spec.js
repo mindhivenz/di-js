@@ -101,9 +101,9 @@ describe('mockAppContext', () => {
   it('should throw if appContext is not initially empty', async () => {
     try {
       appContext.someContext = some.object()
-      await mockAppContext(
-        sinon.spy()
-      )().should.eventually.reject
+      const func = sinon.spy()
+      await mockAppContext(func)().should.be.rejected
+      func.should.not.have.been.called
     } finally {
       delete appContext.someContext
     }

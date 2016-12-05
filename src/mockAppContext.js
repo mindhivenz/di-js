@@ -17,10 +17,10 @@ export const mockAppContext = (...contextAndFunc) =>
     if (recursiveDepth === 0) {
       const existingKeys = Object.keys(appContext)
       if (existingKeys.length) {
-        return Promise.reject(new Error(
+        throw new Error(
           `appContext appears to have objects leftover from a previous test: ${existingKeys}\n` +
           'Did you forget to use mockAppContext() around code that modified the context?'
-        ))
+        )
       }
     }
     const [contextObjOrFunc, func] = (contextAndFunc.length <= 1) ?
