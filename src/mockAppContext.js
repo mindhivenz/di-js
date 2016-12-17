@@ -12,11 +12,18 @@ Context is optional, so you can just pass: (func)
 
 Note: this can't be called wrapping a 'describe' function. It only works on 'it'.
  */
+const clearAppContext = () => {
+  Object.keys(appContext).forEach((key) => {
+    delete appContext[key]
+  })
+}
+
 export const mockAppContext = (...contextAndFunc) =>
   async () => {
     if (recursiveDepth === 0) {
       const existingKeys = Object.keys(appContext)
       if (existingKeys.length) {
+        clearAppContext()
         throw new Error(
           `appContext appears to have objects leftover from a previous test: ${existingKeys}\n` +
           'Did you forget to use mockAppContext() around code that modified the context?'
@@ -36,9 +43,7 @@ export const mockAppContext = (...contextAndFunc) =>
       return await func(appContext)
     } finally {
       recursiveDepth -= 1
-      Object.keys(appContext).forEach((key) => {
-        delete appContext[key]
-      })
+      clearAppContext()
       Object.assign(appContext, originalAppContext)
     }
   }

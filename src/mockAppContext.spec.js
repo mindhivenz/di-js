@@ -26,7 +26,7 @@ describe('mockAppContext', () => {
     const expected = new Error()
     const func = () => { throw expected }
     await mockAppContext({}, func)()
-      .should.eventually.be.rejectedWith(expected)
+      .should.be.rejectedWith(expected)
   })
 
   it('should handle func returning a promise that fulfills', async () => {
@@ -46,7 +46,7 @@ describe('mockAppContext', () => {
         setTimeout(() => reject(expected), 100)
       })
     await mockAppContext({}, func)()
-      .should.eventually.be.rejectedWith(expected)
+      .should.be.rejectedWith(expected)
   })
 
   it('should restore any changes made to appContext', async () => {
