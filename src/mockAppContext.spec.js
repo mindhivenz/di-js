@@ -3,8 +3,8 @@ import some from '@mindhive/some'
 import { sinon } from './mocha'
 
 import { appContext } from './appContext'
-import { initModules } from './init'
-import { mockAppContext } from './mockAppContext'
+import initModules from './initModules'
+import mockAppContext from './mockAppContext'
 
 
 describe('mockAppContext', () => {

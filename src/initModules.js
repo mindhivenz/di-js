@@ -15,7 +15,7 @@ import { appContext } from './appContext'
 const sanityCheckModules = (modules) => {
   modules.forEach((m, i) => {
     if (typeof m !== 'function') {
-      throw new Error(`initModules() module index ${i} (${modules.length} total) is ${typeof m}, not a function`)
+      throw new Error(`initModules() module index ${i} (of ${modules.length}) is ${typeof m}, should be function`)
     }
   })
 }
@@ -31,7 +31,7 @@ const sanityCheckDuplicateContextName = (newNames) => {
   })
 }
 
-export const initModules = (modules) => {
+export default (modules) => {
   sanityCheckModules(modules)
   modules.forEach((module) => {
     const context = module(appContext)

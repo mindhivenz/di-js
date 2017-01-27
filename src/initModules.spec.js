@@ -1,10 +1,10 @@
 import some from '@mindhive/some'
 
 import { sinon, should } from './mocha'
-import { mockAppContext } from './mockAppContext'
+import mockAppContext from './mockAppContext'
 
 import { appContext } from './appContext'
-import { initModules } from './init'
+import initModules from './initModules'
 
 
 describe('initModules', () => {
@@ -91,7 +91,7 @@ describe('initModules', () => {
           () => {
           },
         ])
-      }, /module index 1 \(3 total\) is undefined/)
+      }, /module index 1 \(of 3\) is undefined/)
     })
   )
 

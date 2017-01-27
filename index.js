@@ -1,11 +1,11 @@
 'use strict'
 
-var init = require('./dist/init')
+var initModules = require('./dist/initModules')
 var appContext = require('./dist/appContext')
 var mockAppContext = require('./dist/mockAppContext')
 
 module.exports = {
-  initModules: init.initModules,
+  initModules: initModules.default,
   app: appContext.app,
-  mockAppContext: mockAppContext.mockAppContext,
+  mockAppContext: mockAppContext.default,
 }

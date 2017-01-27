@@ -18,7 +18,7 @@ const clearAppContext = () => {
   })
 }
 
-export const mockAppContext = (...contextAndFunc) =>
+export default (...contextAndFunc) =>
   async () => {
     if (recursiveDepth === 0) {
       const existingKeys = Object.keys(appContext)
