@@ -18,6 +18,9 @@ const clearAppContext = () => {
   })
 }
 
+// @params: (contextGeneratingFunc | contextObj)?, testFunc
+// Most commonly generate the context using a function. It can either return the context object
+// directly or use initModules internally.
 export default (...contextAndFunc) =>
   async () => {
     if (recursiveDepth === 0) {
@@ -30,20 +33,21 @@ export default (...contextAndFunc) =>
         )
       }
     }
-    const [contextObjOrFunc, func] = (contextAndFunc.length <= 1) ?
+    const [contextObjOrFunc, testFunc] = (contextAndFunc.length <= 1) ?
       [{}, ...contextAndFunc] :
       contextAndFunc
     const originalAppContext = { ...appContext }
     recursiveDepth += 1
     try {
-      const context = (typeof contextObjOrFunc === 'function') ? contextObjOrFunc() : contextObjOrFunc
+      const context = (typeof contextObjOrFunc === 'function') ? await contextObjOrFunc() : contextObjOrFunc
       if (context) {
         Object.assign(appContext, context)
       }
-      return await func(appContext)
+      return await testFunc(appContext)
     } finally {
       recursiveDepth -= 1
       clearAppContext()
       Object.assign(appContext, originalAppContext)
     }
   }
+
