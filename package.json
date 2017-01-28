@@ -1,6 +1,6 @@
 {
   "name": "@mindhive/di",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "description": "Super simple dependency injection",
   "contributors": [
     {
