@@ -4,23 +4,24 @@ import { appContext } from './appContext'
 let recursiveDepth = 0
 
 /*
-Add to appContext for func and clean it up at the end
+Add to appContext for testFunc and clean it up at the end
 
-Arguments are: ([context,] func)
+Arguments are: ([contextGeneratingFunc | contextObj], testFunc)
 
-Context is optional, so you can just pass: (func)
+Most commonly generate the context using a function. It can either return the context object
+directly or use initModules internally.
+
+Note: if the test times out then cleanup is not run. TODO!
 
 Note: this can't be called wrapping a 'describe' function. It only works on 'it'.
  */
+
 const clearAppContext = () => {
   Object.keys(appContext).forEach((key) => {
     delete appContext[key]
   })
 }
 
-// @params: (contextGeneratingFunc | contextObj)?, testFunc
-// Most commonly generate the context using a function. It can either return the context object
-// directly or use initModules internally.
 export default (...contextAndFunc) =>
   async () => {
     if (recursiveDepth === 0) {
