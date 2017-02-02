@@ -6,6 +6,6 @@ var mockAppContext = require('./dist/mockAppContext')
 
 module.exports = {
   initModules: initModules.default,
-  app: appContext.app,
+  app: appContext.default,
   mockAppContext: mockAppContext.default,
 }

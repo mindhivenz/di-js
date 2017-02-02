@@ -5,12 +5,13 @@
  Only exported to enable testing. You shouldn't be accessing this normally.
  */
 
-if (! global.appContext) {
-  global.appContext = {}
+const g = global || window || self  // eslint-disable-line no-undef
+
+if (typeof g.appContext === 'undefined') {
+  g.appContext = {}
 }
 
-export const appContext = global.appContext
+export const appContext = g.appContext
 
-export const app = () =>
+export default () =>
   appContext
-
