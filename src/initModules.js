@@ -33,11 +33,16 @@ const sanityCheckDuplicateContextName = (newNames) => {
 
 export default (modules) => {
   sanityCheckModules(modules)
-  modules.forEach((module) => {
-    const context = module(appContext)
-    if (context) {
-      sanityCheckDuplicateContextName(Object.keys(context))
-      Object.assign(appContext, context)
+  modules.forEach((module, i) => {
+    try {
+      const context = module(appContext)
+      if (context) {
+        sanityCheckDuplicateContextName(Object.keys(context))
+        Object.assign(appContext, context)
+      }
+    } catch (e) {
+      console.error(`initModules() module index ${i} (of ${modules.length}) threw...`)  // eslint-disable-line no-console
+      throw e
     }
   })
 }

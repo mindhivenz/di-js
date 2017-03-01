@@ -8,6 +8,7 @@
 const g = global || window || self  // eslint-disable-line no-undef
 
 if (typeof g.appContext === 'undefined') {
+  // noinspection JSAnnotator
   g.appContext = {}
 }
 
