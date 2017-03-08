@@ -1,9 +1,9 @@
 {
   "presets": [
-    "es2015",
-    "stage-3"
+    "env"
   ],
   "plugins": [
+    "transform-object-rest-spread",
     ["transform-runtime", {
       "polyfill": false,
       "regenerator": true
