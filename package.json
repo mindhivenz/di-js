@@ -39,7 +39,7 @@
     "eslint": "^3.13.1",
     "eslint-config-mindhive": "^1.0.1",
     "mocha": "^3.1.2",
-    "sinon": "^1.17.6",
+    "sinon": "^2.3.1",
     "sinon-chai": "^2.8.0"
   },
   "homepage": "https://github.com/mindhivenz/di-js",

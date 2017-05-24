@@ -41,7 +41,7 @@ export default (modules) => {
         Object.assign(appContext, context)
       }
     } catch (e) {
-      console.error(`initModules() module index ${i} (of ${modules.length}) threw...`)  // eslint-disable-line no-console
+      console.info(`initModules() module index ${i} (of ${modules.length}) threw...`)  // eslint-disable-line no-console
       throw e
     }
   })
