@@ -51,3 +51,9 @@ it('should call service.foo()',
 
 `modules` is a function so that the spys and dummy values used in it 
 are recreated every test, avoiding any contamination to the next test.
+
+However, if your test runner doesn't teardown the tests properly it 
+may be necessary to use `resetAppContext`. 
+
+You can also use `initModules` within the 'modules' function, it operates
+exactly as it would in production code.

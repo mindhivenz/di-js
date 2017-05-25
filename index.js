@@ -8,4 +8,5 @@ module.exports = {
   initModules: initModules.default,
   app: appContext.default,
   mockAppContext: mockAppContext.default,
+  resetAppContext: mockAppContext.resetAppContext,
 }
