@@ -6,7 +6,7 @@ let recursiveDepth = 0
 /*
 Add to appContext for testFunc and clean it up at the end
 
-Arguments are: ([contextGeneratingFunc | contextObj], testFunc)
+Arguments are: [contextGeneratingFunc | contextObj], testFunc
 
 Most commonly generate the context using a function. It can either return the context object
 directly or use initModules internally.
@@ -38,7 +38,13 @@ export default (...contextAndFunc) =>
     const originalAppContext = { ...appContext }
     recursiveDepth += 1
     try {
-      const context = (typeof contextObjOrFunc === 'function') ? await contextObjOrFunc() : contextObjOrFunc
+      let context = (typeof contextObjOrFunc === 'function') ? contextObjOrFunc() : contextObjOrFunc
+      if (context && typeof context.then === 'function') {
+        // Don't await if we don't need to because if being called from a fiber, then code after await is run outside
+        // the fiber meaning the actual testFunc will run outside of the fiber.
+        // Fibers are used by @mindhive/meteor/test/mockServerContext
+        context = await context
+      }
       if (context) {
         Object.assign(appContext, context)
       }
