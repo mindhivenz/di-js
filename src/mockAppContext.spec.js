@@ -49,19 +49,25 @@ describe('mockAppContext', () => {
       .should.be.rejectedWith(expected)
   })
 
-  it('should restore any changes made to appContext', async () => {
+  // it('should restore any changes made to appContext', async () => {
+  //   await mockAppContext(() => {
+  //     appContext.someObject = some.object()
+  //   })()
+  //   appContext.should.be.empty
+  // })
+
+  it('should clear any context left over from previous tests', async () => {
+    appContext.someObject = some.object()
     await mockAppContext(() => {
-      appContext.someObject = some.object()
+      appContext.should.be.empty
     })()
-    appContext.should.be.empty
   })
 
-  it('should apply plain object into appContext and restore afterwards', async () => {
+  it('should apply plain object into appContext', async () => {
     await mockAppContext({ a: 1, b: 2 }, () => {
       appContext.should.have.property('a', 1)
       appContext.should.have.property('b', 2)
     })()
-    appContext.should.be.empty
   })
 
   it('should call context if it is a function and apply the result', async () => {
@@ -70,7 +76,14 @@ describe('mockAppContext', () => {
       appContext.should.have.property('a', 1)
       appContext.should.have.property('b', 2)
     })()
-    appContext.should.be.empty
+  })
+
+  it('should use context if context function returns promise', async () => {
+    const contextFunc = async () => ({ a: 1, b: 2 })
+    await mockAppContext(contextFunc, () => {
+      appContext.should.have.property('a', 1)
+      appContext.should.have.property('b', 2)
+    })()
   })
 
   it('should work with initModules inside context function', async () => {
@@ -80,7 +93,6 @@ describe('mockAppContext', () => {
       appContext.should.have.property('a', 1)
       appContext.should.have.property('b', 2)
     })()
-    appContext.should.be.empty
   })
 
   it('should handle context function throwing after modifying context', async () => {
@@ -89,24 +101,12 @@ describe('mockAppContext', () => {
     const contextFunc = () => { initModules([goodModule, badModule]) }
     await mockAppContext(contextFunc, () => {})()
       .should.be.rejected
-    appContext.should.be.empty
   })
 
   it('should allow context to be optional', async () => {
     const func = sinon.spy()
     await mockAppContext(func)()
     func.should.have.been.called
-  })
-
-  it('should throw if appContext is not initially empty', async () => {
-    try {
-      appContext.someContext = some.object()
-      const func = sinon.spy()
-      await mockAppContext(func)().should.be.rejected
-      func.should.not.have.been.called
-    } finally {
-      delete appContext.someContext
-    }
   })
 
   it('should allow nested calls', async () => {
@@ -116,16 +116,6 @@ describe('mockAppContext', () => {
     await mockAppContext({ firstContext: some.object() }, () =>
       mockAppContext({ secondContext: some.object() }, func)()
     )()
-    func.should.have.been.calledOnce
-  })
-
-  it('should restore intermediate context in nested calls', async () => {
-    const func = sinon.spy()
-    await mockAppContext({ firstContext: some.object() }, async () => {
-      await mockAppContext({ secondContext: some.object() }, func)()
-      appContext.should.have.keys('firstContext')
-      appContext.should.not.have.keys('secondContext')
-    })()
     func.should.have.been.calledOnce
   })
 
