@@ -70,6 +70,13 @@ describe('mockAppContext', () => {
     })()
   })
 
+  it('should not cleanup appContext at end so timing out tests do not step on others', async () => {
+    await mockAppContext({ a: 1, b: 2 }, () => {
+    })()
+    appContext.should.have.property('a', 1)
+    appContext.should.have.property('b', 2)
+  })
+
   it('should call context if it is a function and apply the result', async () => {
     const contextFunc = () => ({ a: 1, b: 2 })
     await mockAppContext(contextFunc, () => {
