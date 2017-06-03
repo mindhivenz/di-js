@@ -44,11 +44,6 @@ export default (...contextAndFunc) =>
       return await testFunc(appContext)
     } finally {
       recursiveDepth -= 1
-      // Object.keys(appContext).forEach(k => {
-      //   if (originalAppContextKeys.indexOf(k) === -1) {
-      //     delete appContext[k]
-      //   }
-      // })
     }
   }
 

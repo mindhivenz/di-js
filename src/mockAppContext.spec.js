@@ -49,13 +49,6 @@ describe('mockAppContext', () => {
       .should.be.rejectedWith(expected)
   })
 
-  // it('should restore any changes made to appContext', async () => {
-  //   await mockAppContext(() => {
-  //     appContext.someObject = some.object()
-  //   })()
-  //   appContext.should.be.empty
-  // })
-
   it('should clear any context left over from previous tests', async () => {
     appContext.someObject = some.object()
     await mockAppContext(() => {
