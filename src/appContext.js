@@ -4,6 +4,8 @@
  Only exported to enable testing. You shouldn't be accessing this normally.
  */
 
+/* eslint-disable no-undef */
+
 const chooseGlobalNamespace = () => {
   if (typeof window !== 'undefined') {
     return window

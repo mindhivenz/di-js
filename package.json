@@ -36,10 +36,10 @@
     "babel-preset-env": "^1.2.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^3.13.1",
+    "eslint": "^4.7.2",
     "eslint-config-mindhive": "^1.0.1",
     "mocha": "^3.1.2",
-    "sinon": "^2.3.1",
+    "sinon": "^4.0.0",
     "sinon-chai": "^2.8.0"
   },
   "homepage": "https://github.com/mindhivenz/di-js",
