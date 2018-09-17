@@ -35,13 +35,13 @@ export default (modules) => {
   sanityCheckModules(modules)
   modules.forEach((module, i) => {
     try {
-      const context = module(appContext)
-      if (context) {
-        sanityCheckDuplicateContextName(Object.keys(context))
-        Object.assign(appContext, context)
+      const moduleContext = module(appContext)
+      if (moduleContext) {
+        sanityCheckDuplicateContextName(Object.keys(moduleContext))
+        Object.assign(appContext, moduleContext)
       }
     } catch (e) {
-      console.info(`initModules() module index ${i} (of ${modules.length}) threw...`)  // eslint-disable-line no-console
+      console.info(`initModules() module index ${i} (of ${modules.length}) threw`, e) // eslint-disable-line no-console
       throw e
     }
   })
